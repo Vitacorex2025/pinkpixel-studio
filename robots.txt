@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /.claude/
 
-Sitemap: https://pinkpixelstudio.com/sitemap.xml
+Sitemap: https://pinkpixel.design/sitemap.xml
