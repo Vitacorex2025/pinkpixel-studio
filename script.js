@@ -65,7 +65,7 @@ const setMenuState = (open) => {
     toggle.setAttribute('aria-expanded', String(open));
   });
 
-  if (menuPanel) menuPanel.hidden = true;
+  if (menuPanel) menuPanel.hidden = !open;
   body.classList.toggle('is-lock', open);
   body.classList.toggle('is-menu-open', open);
 
