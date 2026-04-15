@@ -32,6 +32,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
   <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
   <meta name="theme-color" content="#0b040d" />
 
   <!-- JSON-LD Structured Data -->
@@ -40,13 +42,23 @@
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "Pink Pixel Studio",
-    "url": "https://pinkpixelstudio.com",
-    "logo": "https://pinkpixel.design/logo.png",
+    "url": "https://pinkpixel.design/",
+    "logo": "https://pinkpixel.design/mascot.png",
     "description": "Premium web design agency specializing in conversion-focused websites, landing pages, business sites, and brand redesigns for ambitious companies.",
     "priceRange": "$1,250 - $10,000+",
     "serviceType": ["Web Design", "Web Development", "Landing Page Design", "Website Redesign", "Ecommerce Website Design"],
     "areaServed": "Worldwide",
-    "sameAs": [],
+    "sameAs": [
+      "https://instagram.com/pinkpixelstudio",
+      "https://facebook.com/pinkpixelstudio",
+      "https://linkedin.com/company/pinkpixelstudio"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "sales",
+      "email": "hello@pinkpixel.design",
+      "availableLanguage": ["English", "Russian"]
+    },
     "offers": [
       {
         "@type": "Offer",
@@ -79,9 +91,74 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much does a premium website usually cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Focused landing page projects start from $1,250. Larger business websites, redesigns, and product launches depend on scope, page count, integrations, and whether copy or CMS structure are part of the job."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is included in the quoted scope?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually: positioning, visual direction, responsive page design, build, core interactions, CTA flow, form setup, and launch-ready QA. If CMS, copy support, or integrations are needed, they are listed in the scope instead of being buried."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many revisions are included?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Enough to refine the work without dragging the project into chaos. The goal is a disciplined review loop with clear feedback rounds, not endless undo-redo cycles that dilute the result."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you help if we do not have all the copy or content ready?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We can structure the message, define what content is missing, and build the website so it is still moving forward while final assets and copy are being collected."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do we own the final design and build?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Once the project is completed and paid, the final website assets and build are yours. If third-party tools or licenses are involved, those are called out separately."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there any guarantee on the work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Every project includes a 30-day post-launch support window for bug fixes and minor adjustments. If something breaks or does not match the agreed scope, we fix it at no extra cost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens after launch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can launch cleanly, keep CMS control if needed, and continue with aftercare or smaller refinements. The point is not just to ship the website, but to keep it usable and commercially sharp afterward."
+        }
+      }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Instrument+Serif:ital@0;1&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
