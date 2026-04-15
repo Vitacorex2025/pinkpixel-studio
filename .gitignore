@@ -1,0 +1,5 @@
+# Development artifacts
+preview*.png
+__scroll_preview_keep.html
+codex_runs/
+.claude/
