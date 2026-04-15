@@ -895,10 +895,10 @@ p, h1, h2, h3, h4 { margin: 0; }
   justify-content: flex-end;
   gap: 1rem;
   background:
+    linear-gradient(180deg, rgba(11, 4, 13, 0.32) 0%, rgba(11, 4, 13, 0.72) 55%, rgba(11, 4, 13, 0.92) 100%),
     radial-gradient(circle at 22% 16%, rgba(240, 214, 220, 0.18), transparent 28%),
     radial-gradient(circle at 78% 84%, rgba(216, 184, 144, 0.14), transparent 26%),
-    linear-gradient(180deg, rgba(255, 248, 249, 0.07) 0%, rgba(255, 248, 249, 0.02) 100%),
-    rgba(18, 10, 15, 0.94);
+    url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=75') center center / cover no-repeat;
 }
 
 .timeline-panel-intro h3,
@@ -1065,14 +1065,8 @@ p, h1, h2, h3, h4 { margin: 0; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
   filter: saturate(0.96) contrast(1.02);
-  transition: transform 0.7s var(--ease-luxury), filter 0.4s ease;
-}
-
-.team-card:hover .team-photo-image {
-  transform: scale(1.05);
-  filter: saturate(1.02) contrast(1.04);
 }
 
 .team-card:nth-child(2) .team-photo-image {
@@ -2019,35 +2013,27 @@ p, h1, h2, h3, h4 { margin: 0; }
 }
 @media (max-width: 47.9375rem) {
   .hero-stage {
-    min-height: 31rem;
+    min-height: 26rem;
   }
   .hero-gallery {
-    min-height: 29rem;
+    min-height: 24rem;
   }
   .hero-visual-main {
-    inset: 8% 4% 16% 0;
-    transform: rotate(-4deg);
+    inset: 4% 2% 12% 2%;
+    transform: rotate(-2deg);
   }
   .hero-visual-side {
-    width: 8.8rem;
-    border-radius: 1.35rem;
-  }
-  .hero-visual-side.is-top {
-    right: 0;
-    top: 4%;
-  }
-  .hero-visual-side.is-bottom {
-    right: 0.25rem;
-    bottom: 4%;
+    display: none;
   }
   .hero-visual-overlay {
-    inset: auto 1rem 1rem 1rem;
+    inset: auto 0.8rem 0.8rem 0.8rem;
   }
   .hero-visual-overlay strong {
-    font-size: 1.55rem;
+    font-size: 1.35rem;
   }
   .hero-visual-overlay p {
-    font-size: 0.92rem;
+    font-size: 0.85rem;
+    max-width: none;
   }
   .hero-floating-stat {
     max-width: 10rem;
