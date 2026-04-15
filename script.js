@@ -896,8 +896,9 @@ form?.addEventListener('submit', (event) => {
   window.addEventListener('resize', resize, { passive: true });
 
   const particles = [];
-  const count = 120;
-  const connectDist = 140;
+  const isMobile = window.innerWidth < 768;
+  const count = isMobile ? 40 : 120;
+  const connectDist = isMobile ? 100 : 140;
   const aR = 185, aG = 119, aB = 144;
 
   for (let i = 0; i < count; i++) {
@@ -970,7 +971,7 @@ form?.addEventListener('submit', (event) => {
   function initParticles() {
     particles = [];
     var count = Math.round((W * H) / 12000);
-    count = Math.min(count, 200);
+    count = Math.min(count, window.innerWidth < 768 ? 60 : 200);
     for (var i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * W,
