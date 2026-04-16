@@ -695,10 +695,12 @@ p, h1, h2, h3, h4 { margin: 0; }
   .gravity-slide-card { width: 100%; padding: 1.5rem; }
   .timeline-cards { padding-bottom: 0.2rem; }
   .horizontal-scroll-card-about-us { flex-basis: 85vw; min-height: 15rem; }
-  .team-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; max-width: 24rem; margin: 0 auto; }
   .margin-top-48-0 { margin-top: 0; }
-  .team-card { min-height: 24rem; }
+  .team-card { min-height: 24rem; transform: none !important; transition: none; }
+  .team-card:hover { transform: none !important; box-shadow: none; }
   .team-photo { height: 14.5rem; }
+  .team-photo-image { object-position: center center; }
   .accordion-head { font-size: 1rem; padding: 1.1rem 1rem; }
   .accordion-body p { padding: 0 1rem 0; }
   .faq-accordion.is-open .accordion-body { padding-bottom: 1rem; }
