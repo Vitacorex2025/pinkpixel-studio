@@ -2,4 +2,26 @@ User-agent: *
 Allow: /
 Disallow: /.claude/
 
+# AI crawlers welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://pinkpixel.design/sitemap.xml
