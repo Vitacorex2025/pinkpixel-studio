@@ -876,13 +876,15 @@ form?.addEventListener('submit', (event) => {
 
 /* ── Entropy canvas background ── */
 (function() {
+  var isMobile = window.innerWidth < 768;
+  if (isMobile) return; /* disable on mobile to prevent crashes */
   const canvas = document.getElementById('entropy-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   const dpr = window.devicePixelRatio || 1;
-  let W, H;
+  let W, H, isVisible = false, rafId = 0;
 
   function resize() {
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -896,9 +898,8 @@ form?.addEventListener('submit', (event) => {
   window.addEventListener('resize', resize, { passive: true });
 
   const particles = [];
-  const isMobile = window.innerWidth < 768;
-  const count = isMobile ? 40 : 120;
-  const connectDist = isMobile ? 100 : 140;
+  const count = 80;
+  const connectDist = 120;
   const aR = 185, aG = 119, aB = 144;
 
   for (let i = 0; i < count; i++) {
@@ -912,6 +913,7 @@ form?.addEventListener('submit', (event) => {
   }
 
   function tick() {
+    if (!isVisible) { rafId = 0; return; }
     ctx.clearRect(0, 0, W, H);
     for (let i = 0; i < count; i++) {
       const p = particles[i];
@@ -938,13 +940,19 @@ form?.addEventListener('submit', (event) => {
         }
       }
     }
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
   }
-  tick();
+
+  new IntersectionObserver(function(entries) {
+    isVisible = entries[0].isIntersecting;
+    if (isVisible && !rafId) rafId = requestAnimationFrame(tick);
+  }, { threshold: 0.05 }).observe(canvas.parentElement);
 })();
 
 /* ── AetherFlow interactive particles (Team section) ── */
 (function() {
+  var isMobile = window.innerWidth < 768;
+  if (isMobile) return; /* disable on mobile to prevent crashes */
   var canvas = document.getElementById('aether-canvas');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
@@ -952,7 +960,7 @@ form?.addEventListener('submit', (event) => {
 
   var section = canvas.parentElement;
   var dpr = window.devicePixelRatio || 1;
-  var W, H;
+  var W, H, isVisible = false, rafId = 0;
   var mouse = { x: null, y: null, radius: 180 };
   var particles = [];
   var connectDist;
@@ -971,7 +979,7 @@ form?.addEventListener('submit', (event) => {
   function initParticles() {
     particles = [];
     var count = Math.round((W * H) / 12000);
-    count = Math.min(count, window.innerWidth < 768 ? 60 : 200);
+    count = Math.min(count, 120);
     for (var i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * W,
@@ -986,7 +994,6 @@ form?.addEventListener('submit', (event) => {
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  // Track mouse relative to section
   window.addEventListener('mousemove', function(e) {
     var rect = section.getBoundingClientRect();
     if (e.clientY >= rect.top && e.clientY <= rect.bottom &&
@@ -994,27 +1001,23 @@ form?.addEventListener('submit', (event) => {
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     } else {
-      mouse.x = null;
-      mouse.y = null;
+      mouse.x = null; mouse.y = null;
     }
   }, { passive: true });
 
   window.addEventListener('mouseout', function() {
-    mouse.x = null;
-    mouse.y = null;
+    mouse.x = null; mouse.y = null;
   }, { passive: true });
 
   function tick() {
+    if (!isVisible) { rafId = 0; return; }
     ctx.clearRect(0, 0, W, H);
-    var aR = 191, aG = 128, aB = 255; // purple accent
+    var aR = 191, aG = 128, aB = 255;
 
     for (var i = 0; i < particles.length; i++) {
       var p = particles[i];
-
-      // Mouse repulsion
       if (mouse.x !== null && mouse.y !== null) {
-        var dx = mouse.x - p.x;
-        var dy = mouse.y - p.y;
+        var dx = mouse.x - p.x, dy = mouse.y - p.y;
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < mouse.radius && dist > 0) {
           var force = (mouse.radius - dist) / mouse.radius;
@@ -1022,37 +1025,27 @@ form?.addEventListener('submit', (event) => {
           p.y -= (dy / dist) * force * 4;
         }
       }
-
-      p.x += p.vx;
-      p.y += p.vy;
+      p.x += p.vx; p.y += p.vy;
       if (p.x < 0 || p.x > W) p.vx *= -1;
       if (p.y < 0 || p.y > H) p.vy *= -1;
       p.x = Math.max(0, Math.min(W, p.x));
       p.y = Math.max(0, Math.min(H, p.y));
-
-      // Draw particle
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(' + aR + ',' + aG + ',' + aB + ',0.6)';
       ctx.fill();
-
-      // Connection lines
       for (var j = i + 1; j < particles.length; j++) {
         var q = particles[j];
         var cdx = p.x - q.x, cdy = p.y - q.y;
         var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
         if (cdist < connectDist) {
           var opacity = (0.2 * (1 - cdist / connectDist));
-          // Brighten lines near mouse
           if (mouse.x !== null) {
-            var mx = (p.x + q.x) / 2 - mouse.x;
-            var my = (p.y + q.y) / 2 - mouse.y;
+            var mx = (p.x + q.x) / 2 - mouse.x, my = (p.y + q.y) / 2 - mouse.y;
             var mDist = Math.sqrt(mx * mx + my * my);
-            if (mDist < mouse.radius) {
-              ctx.strokeStyle = 'rgba(255,255,255,' + (opacity * 2.5).toFixed(3) + ')';
-            } else {
-              ctx.strokeStyle = 'rgba(' + aR + ',' + aG + ',' + aB + ',' + opacity.toFixed(3) + ')';
-            }
+            ctx.strokeStyle = mDist < mouse.radius
+              ? 'rgba(255,255,255,' + (opacity * 2.5).toFixed(3) + ')'
+              : 'rgba(' + aR + ',' + aG + ',' + aB + ',' + opacity.toFixed(3) + ')';
           } else {
             ctx.strokeStyle = 'rgba(' + aR + ',' + aG + ',' + aB + ',' + opacity.toFixed(3) + ')';
           }
@@ -1064,13 +1057,19 @@ form?.addEventListener('submit', (event) => {
         }
       }
     }
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
   }
-  tick();
+
+  new IntersectionObserver(function(entries) {
+    isVisible = entries[0].isIntersecting;
+    if (isVisible && !rafId) rafId = requestAnimationFrame(tick);
+  }, { threshold: 0.05 }).observe(section);
 })();
 
 /* ── FAQ flowing network canvas ── */
 (function() {
+  var isMobile = window.innerWidth < 768;
+  if (isMobile) return; /* disable on mobile to prevent crashes */
   var canvas = document.getElementById('faq-canvas');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
@@ -1078,7 +1077,7 @@ form?.addEventListener('submit', (event) => {
 
   var section = canvas.parentElement;
   var dpr = window.devicePixelRatio || 1;
-  var W, H;
+  var W, H, isVisible = false, rafId = 0;
   var mouse = { x: null, y: null, radius: 200 };
   var particles = [];
   var connectDist;
@@ -1098,7 +1097,7 @@ form?.addEventListener('submit', (event) => {
   function initParticles() {
     particles = [];
     var count = Math.round((W * H) / 14000);
-    count = Math.min(count, 160);
+    count = Math.min(count, 100);
     for (var i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * W,
@@ -1121,8 +1120,7 @@ form?.addEventListener('submit', (event) => {
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     } else {
-      mouse.x = null;
-      mouse.y = null;
+      mouse.x = null; mouse.y = null;
     }
   }, { passive: true });
 
@@ -1131,20 +1129,16 @@ form?.addEventListener('submit', (event) => {
   }, { passive: true });
 
   function tick() {
+    if (!isVisible) { rafId = 0; return; }
     time += 0.003;
     ctx.clearRect(0, 0, W, H);
 
     for (var i = 0; i < particles.length; i++) {
       var p = particles[i];
-
-      // Gentle wave drift
       p.x += p.vx + Math.sin(time + p.phase) * 0.15;
       p.y += p.vy + Math.cos(time * 0.7 + p.phase) * 0.1;
-
-      // Mouse repulsion
       if (mouse.x !== null && mouse.y !== null) {
-        var dx = mouse.x - p.x;
-        var dy = mouse.y - p.y;
+        var dx = mouse.x - p.x, dy = mouse.y - p.y;
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < mouse.radius && dist > 0) {
           var force = (mouse.radius - dist) / mouse.radius;
@@ -1152,36 +1146,27 @@ form?.addEventListener('submit', (event) => {
           p.y -= (dy / dist) * force * 3.5;
         }
       }
-
       if (p.x < 0 || p.x > W) p.vx *= -1;
       if (p.y < 0 || p.y > H) p.vy *= -1;
       p.x = Math.max(0, Math.min(W, p.x));
       p.y = Math.max(0, Math.min(H, p.y));
-
-      // Pulsing glow particle
       var glow = 0.4 + Math.sin(time * 2 + p.phase) * 0.2;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(185,119,144,' + glow.toFixed(2) + ')';
       ctx.fill();
-
-      // Connections
       for (var j = i + 1; j < particles.length; j++) {
         var q = particles[j];
         var cdx = p.x - q.x, cdy = p.y - q.y;
         var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
         if (cdist < connectDist) {
           var alpha = 0.14 * (1 - cdist / connectDist);
-          // Brighten near mouse
           if (mouse.x !== null) {
-            var mx = (p.x + q.x) / 2 - mouse.x;
-            var my = (p.y + q.y) / 2 - mouse.y;
+            var mx = (p.x + q.x) / 2 - mouse.x, my = (p.y + q.y) / 2 - mouse.y;
             var mDist = Math.sqrt(mx * mx + my * my);
-            if (mDist < mouse.radius) {
-              ctx.strokeStyle = 'rgba(240,214,220,' + (alpha * 3).toFixed(3) + ')';
-            } else {
-              ctx.strokeStyle = 'rgba(185,119,144,' + alpha.toFixed(3) + ')';
-            }
+            ctx.strokeStyle = mDist < mouse.radius
+              ? 'rgba(240,214,220,' + (alpha * 3).toFixed(3) + ')'
+              : 'rgba(185,119,144,' + alpha.toFixed(3) + ')';
           } else {
             ctx.strokeStyle = 'rgba(185,119,144,' + alpha.toFixed(3) + ')';
           }
@@ -1193,9 +1178,13 @@ form?.addEventListener('submit', (event) => {
         }
       }
     }
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
   }
-  tick();
+
+  new IntersectionObserver(function(entries) {
+    isVisible = entries[0].isIntersecting;
+    if (isVisible && !rafId) rafId = requestAnimationFrame(tick);
+  }, { threshold: 0.05 }).observe(section);
 })();
 
 /* ── Spotlight glow on team card ── */
